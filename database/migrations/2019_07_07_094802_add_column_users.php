@@ -6,23 +6,20 @@ use Illuminate\Database\Migrations\Migration;
 
 class AddColumnUsers extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('user_role_id')->default(0);
+            $table->string('caption')->nullable()->default(null);
+            $table->integer('crew')->default(0);
+        });
     }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('user_role_id');
+            $table->dropColumn('caption');
+            $table->dropColumn('crew');
+        });
     }
 }

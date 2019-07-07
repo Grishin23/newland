@@ -15,6 +15,12 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('account_init_id')->default(0);
+            $table->integer('account_target_id')->default(0);
+            $table->decimal('amount',11,2)->default(0);
+            $table->decimal('balance_before',11,2)->default(0);
+            $table->decimal('balance_after',11,2)->default(0);
+            $table->text('message')->nullable()->default(null);
             $table->timestamps();
         });
     }
