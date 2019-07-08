@@ -1,19 +1,22 @@
 @extends('layouts.default')
 @section('content')
-    <h1>Перевод</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" aria-current="page"><a href="/"> Мой профиль</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Перевод</li>
+        </ol>
+    </nav>
     <form method="post" action="{{route('moneyTransfer')}}">
         @csrf
-        @if($full_access)
+        @if($available_accounts_edit->count())
             <div class="form-group">
                 <label for="init_id">ИНН Отправителя</label>
-                <span class="float-right" id="init_id_suggestion" style="display: none"></span>
-                <input type="number" class="@error('init_id') is-invalid @enderror form-control" id="init_id"
-                       name="init_id" placeholder="Введи ИНН"
-                       onchange="getUserInfo(jQuery(this).val(),'init')"
-                       value="{{old('init_id')}}">
-                @error('init_id')
-                    <small class="form-text text-muted text-danger">{{ $message }}</small>
-                @enderror
+                <select class="form-control" id="init_id" name="init_id">
+                    <option value="{{request()->user()->id}}">#{{request()->user()->id}} {{request()->user()->name}}</option>
+                    @foreach($available_accounts_edit as $account)
+                        <option value="{{$account->user_id}}">#{{$account->user->id}} {{$account->user->name}}</option>
+                    @endforeach
+                </select>
             </div>
         @endif
         @if($target_user)

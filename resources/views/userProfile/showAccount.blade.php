@@ -1,9 +1,15 @@
 @extends('layouts.default')
 @section('content')
-    <h1>{{$account->user->name}}</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" aria-current="page"><a href="/"> Мой профиль</a></li>
+            <li class="breadcrumb-item" aria-current="page"><a href="{{route('availableAccounts')}}">Доступные счета</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{$account->user->name}}</li>
+        </ol>
+    </nav>
     <div class="row">
         <div class="col-6">
-            <dt>Ваш ИНН</dt>
+            <dt>ИНН</dt>
             <dd>{{$account->user->id}}</dd>
         </div>
         <div class="col-6">

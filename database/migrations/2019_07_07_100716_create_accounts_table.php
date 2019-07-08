@@ -17,6 +17,7 @@ class CreateAccountsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('user_id')->default(0);
             $table->decimal('balance',11,2)->default(0);
+            $table->string('name')->nullable()->default(null);
             $table->timestamps();
         });
     }

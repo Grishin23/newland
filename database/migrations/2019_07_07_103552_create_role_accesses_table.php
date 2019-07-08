@@ -17,6 +17,7 @@ class CreateRoleAccessesTable extends Migration
             $table->bigIncrements('id');
             $table->integer('role_id')->default(0);
             $table->integer('account_id')->default(0);
+            $table->tinyInteger('edit')->default(0);
             $table->timestamps();
         });
     }

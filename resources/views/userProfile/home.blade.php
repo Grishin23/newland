@@ -1,5 +1,10 @@
 @extends('layouts.default')
 @section('content')
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Мой профиль</li>
+        </ol>
+    </nav>
     <h1>{{$user->name}}</h1>
     @if (session('transaction'))
         <div class="card mb-2">

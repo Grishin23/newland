@@ -10,6 +10,10 @@ use Validator;
 
 class UserProfile extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function show(Request $request)
     {
         $user = User::find($request->user()->id);
@@ -33,9 +37,9 @@ class UserProfile extends Controller
     }
     public function moneyTransferForm(Request $request){
         $balance = $request->user()->main_account->balance;
-        $full_access = $request->user()->available_accounts->count();
+        $available_accounts_edit = $request->user()->available_accounts_edit;
         $target_user = User::find($request->target_id)??0;
-        return view('userProfile.moneyTransferForm',compact('balance','target_user','full_access'));
+        return view('userProfile.moneyTransferForm',compact('balance','target_user','available_accounts_edit'));
     }
     public function userInfo($id){
         $message = User::find($id)->name??'ИНН не найден';
@@ -48,12 +52,12 @@ class UserProfile extends Controller
         $params['init_id'] = $user->id;
         Validator::make($params,[
             'init_id'=>['required','nullable','integer','exists:users,id',function ($attribute, $value, $fail) use($user){
-                if (!request()->user()->checkAvailable($value)) {
-                    $fail('Не надо так делать!');
+                if (!request()->user()->checkAvailableEdit($value)) {
+                    $fail('Не балуй. Этот счет тебе недоступен');
                 }
             }],
             'target_id'=>'required|integer|exists:users,id',
-            'amount'=>"required|regex:/^\d+(\.\d{1,2})?$/|min:0|max:".$user->main_account->balance,
+            'amount'=>"required|integer|regex:/^\d+(\.\d{1,2})?$/|min:0|max:".$user->main_account->balance,
             'message'=>"required|string|min:25|max:1000",
         ],[
             'target_id.exists'=>'Получателя не существует',
@@ -101,6 +105,14 @@ class UserProfile extends Controller
     }
 
     protected function createTransaction($params){
+        $targetAccount = Account::find($params['account_target_id']); dump($targetAccount->balance);
+        $targetAccount->balance += $params['amount'];
+        $targetAccount->save();
+
+        $initAccount = Account::find($params['account_init_id']);
+        $initAccount->balance -= $params['amount'];
+        $initAccount->save();
+
         $transaction = new Transaction();
         $transaction->account_target_id = $params['account_target_id'];
         $transaction->amount = $params['amount'];
@@ -109,5 +121,6 @@ class UserProfile extends Controller
         $transaction->save();
         return $transaction;
     }
+
 
 }

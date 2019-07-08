@@ -1,5 +1,11 @@
 @extends('layouts.default')
 @section('content')
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" aria-current="page"><a href="/"> Мой профиль</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Доступные счета</li>
+        </ol>
+    </nav>
     <h1>Доступные счета</h1>
     @foreach($availableAccounts as $account)
         <div class="card mb-2">

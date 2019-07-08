@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})
+//Route::get('/', function () {
+//    return view('welcome');
+//})
 
 ;Route::get('/demo', function () {
     return view('userProfile.home');
@@ -21,9 +21,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/user-profile', 'UserProfile@show')->name('userProfileShow');
+Route::get('/', 'UserProfile@show')->name('userProfileShow');
 Route::get('/user-profile/edit', 'UserProfile@edit')->name('userProfileEdit');
 Route::get('/user-profile/account/{id}', 'UserProfile@showAccount')->name('accountShow');
 Route::get('/user-profile/available-accounts', 'UserProfile@availableAccounts')->name('availableAccounts');

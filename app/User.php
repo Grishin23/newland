@@ -77,11 +77,15 @@ class User extends Authenticatable
     public function getAvailableAccountsAttribute(){
         return $this->role->accounts()->with(['user'])->orderBy('id','asc')->get();
     }
-    public function checkAvailable($userID){
+    public function getAvailableAccountsEditAttribute(){
+        return $this->role->accounts()->where('edit','=',true)->with(['user'])->orderBy('id','asc')->get();
+    }
+    public function checkAvailableEdit($userID){
         if ($this->id == $userID){
             return true;
         }
-        if (in_array($userID,$this->available_accounts->getColumn('id'))){
+        $accounts = $this->available_accounts_edit->toArray();
+        if ($accounts && in_array($userID,array_column($accounts,'id'))){
             return true;
         }
         return false;
