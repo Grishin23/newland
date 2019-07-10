@@ -15,7 +15,7 @@
             <li class="nav-item {{ Route::is('moneyTransferForm') ? 'active' : '' }}">
                 <a class="nav-link" href="{{route('moneyTransferForm')}}">Перевести</a>
             </li>
-            @if(request()->user()->role_id != 1)
+            @if(count(request()->user()->available_accounts))
             <li class="nav-item {{ Route::is('availableAccounts') ? 'active' : '' }}">
                 <a class="nav-link" href="{{route('availableAccounts')}}">Доступные счета</a>
             </li>
