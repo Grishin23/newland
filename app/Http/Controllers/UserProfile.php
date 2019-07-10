@@ -128,6 +128,7 @@ class UserProfile extends Controller
         $user = $request->user();
         $user->name = $request->name;
         $user->crew = $request->crew;
+        $user->save();
         return redirect()->back()->with(['success'=>'Изменения сохранены']);
     }
     public function updatePasswordForm(){
