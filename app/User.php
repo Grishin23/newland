@@ -83,13 +83,13 @@ class User extends Authenticatable
         if($this->role && $this->role->accounts){
             return $this->role->accounts()->with(['user'])->orderBy('id','asc')->get();
         }
-        return null;
+        return [];
     }
     public function getAvailableAccountsEditAttribute(){
         if($this->role && $this->role->accounts){
             return $this->role->accounts()->where('edit','=',true)->with(['user'])->orderBy('id','asc')->get();
         }
-        return null;
+        return [];
     }
     public function checkAvailableEdit($accountID){
         if ($this->main_account->id == $accountID){
