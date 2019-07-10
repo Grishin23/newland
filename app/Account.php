@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Account whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Account whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Account whereUserId($value)
+ * @property string|null $name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Account whereName($value)
  */
 class Account extends Model
 {
@@ -34,7 +36,7 @@ class Account extends Model
     public function getTransactionsAttribute(){
         return Transaction::where('account_init_id',$this->id)
             ->orWhere('account_target_id',$this->id)
-            ->orderBy('created_at','desc')->get();
+            ->orderBy('created_at','desc')->paginate();
     }
     public function user(){
         return $this->belongsTo(User::class,'user_id');

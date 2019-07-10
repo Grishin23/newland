@@ -36,6 +36,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUserRoleId($value)
+ * @property int $crew
+ * @property-read mixed $available_accounts
+ * @property-read mixed $available_accounts_edit
+ * @property-read \App\Account $main_account
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCrew($value)
  */
 class User extends Authenticatable
 {
@@ -47,7 +52,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','crew'
     ];
 
     /**
@@ -80,12 +85,12 @@ class User extends Authenticatable
     public function getAvailableAccountsEditAttribute(){
         return $this->role->accounts()->where('edit','=',true)->with(['user'])->orderBy('id','asc')->get();
     }
-    public function checkAvailableEdit($userID){
-        if ($this->id == $userID){
+    public function checkAvailableEdit($accountID){
+        if ($this->main_account->id == $accountID){
             return true;
         }
         $accounts = $this->available_accounts_edit->toArray();
-        if ($accounts && in_array($userID,array_column($accounts,'id'))){
+        if ($accounts && in_array($accountID,array_column($accounts,'id'))){
             return true;
         }
         return false;

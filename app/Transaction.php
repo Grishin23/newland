@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transaction whereMessage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Transaction whereUpdatedAt($value)
+ * @property int $transaction_type_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Transaction whereTransactionTypeId($value)
  */
 class Transaction extends Model
 {
@@ -52,5 +54,7 @@ class Transaction extends Model
     public function account_target(){
         return $this->belongsTo(Account::class,'account_target_id');
     }
-
+    public function transaction_type(){
+        return $this->belongsTo(TransactionType::class,'transaction_type_id');
+    }
 }

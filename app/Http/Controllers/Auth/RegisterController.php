@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Account;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -28,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -51,7 +52,20 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:4', 'confirmed'],
+        ],[
+            'name.required'=>'Обязательное поле',
+            'name.string'=>'Некорректные данные',
+            'name.max'=>'Максимум 255 символов',
+            'email.required'=>'Обязательное поле',
+            'email.string'=>'Некорректные данные',
+            'email.email'=>'Некорректные данные',
+            'email.max'=>'Максимум 255 символов',
+            'email.unique'=>'Пользователь с таким email уже существует',
+            'password.required'=>'Обязательное поле',
+            'password.string'=>'Некорректные данные',
+            'password.min'=>'Слишком короткий',
+            'password.confirmed'=>'Введите подтверждение',
         ]);
     }
 
@@ -63,10 +77,14 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+        $account = new Account();
+        $account->user_id = $user->id;
+        $account->save();
+        return $user;
     }
 }

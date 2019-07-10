@@ -9,7 +9,7 @@
             <li class="nav-item {{ Route::is('userProfileShow') ? 'active' : '' }}">
                 <a class="nav-link" href="{{route('userProfileShow')}}">Мой профиль</a>
             </li>
-            <li class="nav-item {{ Route::is('userProfileEdit') ? 'active' : '' }}">
+            <li class="nav-item {{ Route::is('profileEditForm') ? 'active' : '' }}">
                 <a class="nav-link" href="{{route('userProfileEdit')}}">Настройки</a>
             </li>
             <li class="nav-item {{ Route::is('moneyTransferForm') ? 'active' : '' }}">

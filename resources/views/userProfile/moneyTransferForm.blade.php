@@ -12,18 +12,30 @@
             <div class="form-group">
                 <label for="init_id">ИНН Отправителя</label>
                 <select class="form-control" id="init_id" name="init_id">
-                    <option value="{{request()->user()->id}}">#{{request()->user()->id}} {{request()->user()->name}}</option>
+                    @if(request()->user()->main_account)
+                        <option value="{{request()->user()->main_account->id}}">#{{request()->user()->main_account->id}} {{request()->user()->main_account->name??request()->user()->name}}</option>
+                    @endif
                     @foreach($available_accounts_edit as $account)
-                        <option value="{{$account->user_id}}">#{{$account->user->id}} {{$account->user->name}}</option>
+                        <option value="{{$account->id}}">#{{$account->id}} {{$account->name??$account->user->name}}</option>
                     @endforeach
                 </select>
             </div>
         @endif
         @if($target_user)
             <div class="alert alert-dark" role="alert">
-                Получатель: {{$target_user->name}} (#{{$target_user->id}})
+                Получатель: {{$target_user->name}} (#{{$target_user->main_account->id}})
             </div>
         @else()
+            <div class="form-group">
+                <label for="init_id">Тип операции</label>
+                <select class="form-control" id="init_id" name="init_id">
+                    @foreach($transactionTypes as $transactionType)
+                        @if(!$transactionType->show_only || $transactionType->show_only == request()->user()->role_id)
+                            <option value="{{$transactionType->id}}">{{$transactionType->name}}</option>
+                        @endif
+                    @endforeach
+                </select>
+            </div>
             <div class="form-group">
                 <label for="target_id">ИНН Получателя</label>
                 <span class="float-right" id="target_id_suggestion" style="display: none"></span>
@@ -33,7 +45,7 @@
                 @error('target_id')
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
-                <small class="form-text text-muted">Проверяйте вниметельно! Рудол не воробей, вылетит, не поймаешь.</small>
+                <small class="form-text text-muted">Проверяй внимательно! Рудол не воробей, вылетит, не поймаешь.</small>
             </div>
         @endif
         <div class="form-group">

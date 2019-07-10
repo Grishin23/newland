@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\TransactionType;
 use App\User;
+use Dotenv\Exception\ValidationException;
+use Hash;
 use Illuminate\Http\Request;
 use App\Account;
 use App\Transaction;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class UserProfile extends Controller
@@ -18,18 +22,28 @@ class UserProfile extends Controller
     {
         $user = User::find($request->user()->id);
         $mainAccount = $user->main_account()->first();
-        $mainAccountTransactions = $user->main_account->transactions;
-        return view('userProfile.home',compact('user','mainAccount','mainAccountTransactions','availableAccounts'));
+        if ($mainAccount){
+            $mainTransactions = Transaction::where('account_init_id',$mainAccount->id)
+                ->orWhere('account_target_id',$mainAccount->id)
+                ->orderBy('created_at','desc')->paginate(10);
+        }
+
+        return view('userProfile.home',compact('user','mainAccount','availableAccounts','mainTransactions'));
     }
 
     public function showAccount($id){
-        $account = Account::where('user_id',$id)->with(['user'])->first();
-        $accountTransactions = $account->transactions;
-
-       return view('userProfile.showAccount',compact('account','accountTransactions'));
+        $account = Account::where('id',$id)->with(['user'])->first();
+        if (!$account){
+            abort(404);
+        }
+        if (!request()->user()->checkAvailableEdit($id)){
+            abort(403);
+        }
+        $accountTransactions = Transaction::where('account_init_id',$account->id)
+            ->orWhere('account_target_id',$account->id)
+            ->orderBy('created_at','desc')->paginate(10);
+        return view('userProfile.showAccount',compact('account','accountTransactions'));
     }
-
-
     public function availableAccounts(Request $request){
         $user = User::find($request->user()->id);
         $availableAccounts = $user->available_accounts;
@@ -39,26 +53,28 @@ class UserProfile extends Controller
         $balance = $request->user()->main_account->balance;
         $available_accounts_edit = $request->user()->available_accounts_edit;
         $target_user = User::find($request->target_id)??0;
-        return view('userProfile.moneyTransferForm',compact('balance','target_user','available_accounts_edit'));
+        $transactionTypes = TransactionType::all();
+        return view('userProfile.moneyTransferForm',compact('balance','target_user','available_accounts_edit','transactionTypes'));
     }
     public function userInfo($id){
-        $message = User::find($id)->name??'ИНН не найден';
+        $Account = Account::find($id);
+        $message = $Account->name??$Account->user->name??'Неизвестный ИНН';
         return response()->json(['msg'=>$message]);
     }
     public function moneyTransfer(Request $request){
-        $init_id = $request->init_id??$request->user()->id;
-        $user = User::find($init_id);
         $params = $request->all();
-        $params['init_id'] = $user->id;
+        $accountInitID = $request->init_id??$request->user()->main_account->id;
+        $accountInit = Account::find($accountInitID);
         Validator::make($params,[
-            'init_id'=>['required','nullable','integer','exists:users,id',function ($attribute, $value, $fail) use($user){
+            'init_id'=>['required','integer','exists:accounts,id',function ($attribute, $value, $fail){
                 if (!request()->user()->checkAvailableEdit($value)) {
                     $fail('Не балуй. Этот счет тебе недоступен');
                 }
             }],
-            'target_id'=>'required|integer|exists:users,id',
-            'amount'=>"required|integer|regex:/^\d+(\.\d{1,2})?$/|min:0|max:".$user->main_account->balance,
+            'target_id'=>'required|integer|exists:accounts,id',
+            'amount'=>"required|integer|regex:/^\d+(\.\d{1,2})?$/|min:0|max:".$accountInit->balance,
             'message'=>"required|string|min:25|max:1000",
+            'transaction_type_id'=>'required:in'.implode(',', TransactionType::all()->getQueueableIds())
         ],[
             'target_id.exists'=>'Получателя не существует',
             'target_id.required'=>'Укажи получателя',
@@ -74,8 +90,8 @@ class UserProfile extends Controller
 
         ])->validate();
         $createParams = $request->all();
-        $createParams['account_init_id'] = $user->main_account->id;
-        $createParams['account_target_id'] = User::find($params['target_id'])->main_account->id;
+        $createParams['account_init_id'] = $accountInit->id;
+        $createParams['account_target_id'] = $params['target_id'];
         $transaction = $this->createTransaction($createParams);
         return redirect()->route('userProfileShow')->with(['transaction'=>$transaction->toArray()]);
     }
@@ -87,9 +103,10 @@ class UserProfile extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit()
     {
-        //
+        $user = request()->user();
+        return view('userProfile.editForm',compact('user'));
     }
 
     /**
@@ -99,13 +116,43 @@ class UserProfile extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        Validator::make($request->all(),[
+            'name'=>'required|string|max:255',
+            'crew'=>'required|integer|max:7',
+        ],[
+            'crew.required'=>'Введи номер экипажа'
+        ])->validate();
+
+        $user = $request->user();
+        $user->name = $request->name;
+        $user->crew = $request->crew;
+        return redirect()->back()->with(['success'=>'Изменения сохранены']);
+    }
+    public function updatePasswordForm(){
+        return view('userProfile.updatePasswordForm');
+    }
+    public function updatePassword(Request $request){
+        if (!Hash::check($request->now_password, request()->user()->password)){
+            throw \Illuminate\Validation\ValidationException::withMessages(['now_password'=>'Неверный текущий пароль']);
+        }
+        $this->validate($request,[
+            'now_password' => ['required'],
+            'password' => 'required|confirmed',
+            'password_confirmation' => 'required',
+        ],[
+            'password.required'=>'Укажите новый пароль',
+            'password_confirmation.required'=>'Укажите подтверждение нового пароля',
+            'password.confirmed'=>'Новый пароль и подтверждение не совпадают',
+        ]);
+        request()->user()->password = Hash::make($request->password);
+        request()->user()->save();
+        return redirect()->route('profileEditForm')->with(['password'=>'ok']);
     }
 
     protected function createTransaction($params){
-        $targetAccount = Account::find($params['account_target_id']); dump($targetAccount->balance);
+        $targetAccount = Account::find($params['account_target_id']);
         $targetAccount->balance += $params['amount'];
         $targetAccount->save();
 
@@ -118,6 +165,7 @@ class UserProfile extends Controller
         $transaction->amount = $params['amount'];
         $transaction->message = htmlspecialchars(trim($params['message']));
         $transaction->account_init_id = $params['account_init_id'];
+        $transaction->transaction_type_id = $params['transaction_type_id'];
         $transaction->save();
         return $transaction;
     }
