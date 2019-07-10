@@ -80,13 +80,13 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class,'user_role_id');
     }
     public function getAvailableAccountsAttribute(){
-        if($this->role->accounts()){
+        if($this->role && $this->role->accounts){
             return $this->role->accounts()->with(['user'])->orderBy('id','asc')->get();
         }
         return null;
     }
     public function getAvailableAccountsEditAttribute(){
-        if($this->role->accounts()){
+        if($this->role && $this->role->accounts){
             return $this->role->accounts()->where('edit','=',true)->with(['user'])->orderBy('id','asc')->get();
         }
         return null;
