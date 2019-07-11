@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-6">
                 <dt>Твой ИНН</dt>
-                <dd>4{{$mainAccount->id}}</dd>
+                <dd>{{$mainAccount->id}}</dd>
             </div>
             <div class="col-6">
                 <dt>Баланс</dt>
@@ -55,5 +55,4 @@
             </div>
         @endforeach()
     @endif()
-
 @endsection()
