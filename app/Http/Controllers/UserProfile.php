@@ -65,7 +65,7 @@ class UserProfile extends Controller
         $params = $request->all();
         $accountInitID = $request->init_id??$request->user()->main_account->id;
         $accountInit = Account::find($accountInitID);
-        Validator::make($params,[
+        $validator = Validator::make($params,[
             'init_id'=>['required','integer','exists:accounts,id',function ($attribute, $value, $fail){
                 if (!request()->user()->checkAvailableEdit($value)) {
                     $fail('Не балуй. Этот счет тебе недоступен');
@@ -88,7 +88,9 @@ class UserProfile extends Controller
             'init_id.exists'=>'Отправителя не существует',
             'init_id.required'=>'Укажи отправителя',
 
-        ])->validate();
+        ]);
+        dd($validator->errors());
+        $validator->validate();
         $createParams = $request->all();
         $createParams['account_init_id'] = $accountInit->id;
         $createParams['account_target_id'] = $params['target_id'];
