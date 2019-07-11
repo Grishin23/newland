@@ -27,8 +27,8 @@
             </div>
         @else()
             <div class="form-group">
-                <label for="init_id">Тип операции</label>
-                <select class="form-control" id="init_id" name="init_id">
+                <label for="transaction_type_id">Тип операции</label>
+                <select class="form-control" id="transaction_type_id" name="transaction_type_id">
                     @foreach($transactionTypes as $transactionType)
                         @if(!$transactionType->show_only || $transactionType->show_only == request()->user()->role_id)
                             <option value="{{$transactionType->id}}">{{$transactionType->name}}</option>
