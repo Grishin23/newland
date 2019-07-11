@@ -63,8 +63,8 @@ class UserProfile extends Controller
     }
     public function moneyTransfer(Request $request){
         $params = $request->all();
-        $params['unit_id'] = $accountInitID = $request->init_id??$request->user()->main_account->id;
-        $accountInit = Account::find($params['unit_id']);
+        $params['init_id'] = $accountInitID = $request->init_id??$request->user()->main_account->id;
+        $accountInit = Account::find($params['init_id']);
         $validator = Validator::make($params,[
             'init_id'=>['required','integer','exists:accounts,id',function ($attribute, $value, $fail){
                 if (!request()->user()->checkAvailableEdit($value)) {
