@@ -65,7 +65,6 @@ class UserProfile extends Controller
         $params = $request->all();
         $accountInitID = $request->init_id??$request->user()->main_account->id;
         $accountInit = Account::find($accountInitID);
-        dd($accountInitID);
         Validator::make($params,[
             'init_id'=>['required','integer','exists:accounts,id',function ($attribute, $value, $fail){
                 if (!request()->user()->checkAvailableEdit($value)) {
