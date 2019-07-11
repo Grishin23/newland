@@ -89,7 +89,6 @@ class UserProfile extends Controller
             'init_id.required'=>'Укажи отправителя',
 
         ]);
-        dd($params,$validator->errors());
         $validator->validate();
         $createParams = $request->all();
         $createParams['account_init_id'] = $accountInit->id;
