@@ -12,7 +12,7 @@
                 <span class="float-left text-success"> Опрерация проведена успешно!</span>
             </div>
             <div class="card-body">
-                    Номер транзакции <span class="small">{{session('transaction')['id']}}</span>
+                    Номер транзакции: <span class="small">{{session('transaction')['id']}}</span>
                 <blockquote class="blockquote mb-0">
                     <footer class="blockquote-footer">{{session('transaction')['message']}}</footer>
                 </blockquote>
@@ -46,6 +46,8 @@
                         От кого: <span class="small">{{$transaction->account_init->name??$transaction->account_init->user->name}}</span>
                         <span class="small">{{$transaction->account_init->user?'('.$transaction->account_init->user->crew.' экипаж)':''}}</span>
                     @endif
+                    <br>
+                    Номер транзакции: <span class="small">{{$transaction->id??'-'}}</span>
                     <br>
                     Тип операции: <span class="small">{{$transaction->transaction_type->name??'-'}}</span>
                     <blockquote class="blockquote mb-0">
