@@ -31,7 +31,7 @@
                 <label for="transaction_type_id">Тип операции</label>
                 <select class="form-control" id="transaction_type_id" name="transaction_type_id" onchange="getTransactionTypeInfo($(this).val())">
                     @foreach($transactionTypes as $transactionType)
-                        @if(!$transactionType->show_only || $transactionType->show_only == request()->user()->role_id)
+                        @if(!$transactionType->show_only || $transactionType->show_only == request()->user()->user_role_id)
                             <option value="{{$transactionType->id}}">{{$transactionType->name}}</option>
                         @endif
                     @endforeach
