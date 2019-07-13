@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{route('userProfileShow')}}">ЦЮ-Онлайн</a>
+    <a class="navbar-brand" href="{{route('userProfileShow')}}">Банк Ньюландии</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -13,11 +13,11 @@
                 <a class="nav-link" href="{{route('userProfileEdit')}}">Настройки</a>
             </li>
             <li class="nav-item {{ Route::is('moneyTransferForm') ? 'active' : '' }}">
-                <a class="nav-link" href="{{route('moneyTransferForm')}}">Перевести</a>
+                <a class="nav-link" href="{{route('moneyTransferForm')}}">Перевод онлайн</a>
             </li>
             @if(request()->user()->available_accounts->count())
             <li class="nav-item {{ Route::is('availableAccounts') ? 'active' : '' }}">
-                <a class="nav-link" href="{{route('availableAccounts')}}">Доступные счета</a>
+                <a class="nav-link" href="{{route('availableAccounts')}}">Счета</a>
             </li>
             @endif()
             <li class="nav-item">

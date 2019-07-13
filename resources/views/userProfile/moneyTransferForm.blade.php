@@ -3,7 +3,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item" aria-current="page"><a href="/"> Мой профиль</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Перевод</li>
+            <li class="breadcrumb-item active" aria-current="page">Перевод онлайн</li>
         </ol>
     </nav>
     <form method="post" action="{{route('moneyTransfer')}}">
@@ -11,7 +11,8 @@
         @if($available_accounts_edit->count())
             <div class="form-group">
                 <label for="init_id">ИНН Отправителя</label>
-                <select class="form-control" id="init_id" name="init_id">
+                <span class="float-right" id="init_id_suggestion" style="display: none"></span>
+                <select class="form-control" id="init_idq" name="init_id" onchange="getBalance($(this).val())">
                     @if(request()->user()->main_account)
                         <option value="{{request()->user()->main_account->id}}">#{{request()->user()->main_account->id}} {{request()->user()->main_account->name??request()->user()->name}}</option>
                     @endif
@@ -28,7 +29,7 @@
         @else()
             <div class="form-group">
                 <label for="transaction_type_id">Тип операции</label>
-                <select class="form-control" id="transaction_type_id" name="transaction_type_id">
+                <select class="form-control" id="transaction_type_id" name="transaction_type_id" onchange="getTransactionTypeInfo($(this).val())">
                     @foreach($transactionTypes as $transactionType)
                         @if(!$transactionType->show_only || $transactionType->show_only == request()->user()->role_id)
                             <option value="{{$transactionType->id}}">{{$transactionType->name}}</option>
@@ -40,8 +41,8 @@
                 <label for="target_id">ИНН Получателя</label>
                 <span class="float-right" id="target_id_suggestion" style="display: none"></span>
                 <input type="number" class="@error('target_id') is-invalid @enderror form-control" id="target_id"
-                       onchange="getUserInfo(jQuery(this).val(),'target')"
-                       name="target_id" placeholder="Введи ИНН" value="{{old('target_id')}}">
+                       onchange="getAccountInfo(jQuery(this).val(),'target')"
+                       name="target_id" placeholder="ИНН" value="{{old('target_id')}}">
                 @error('target_id')
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
@@ -50,14 +51,14 @@
         @endif
         <div class="form-group">
             <label for="amount">Сумма</label>
-            <input type="number" class="@error('amount') is-invalid @enderror form-control" id="amount" name="amount" placeholder="А что по денюшке?" value="{{old('amount')}}">
+            <input type="number" class="@error('amount') is-invalid @enderror form-control" id="amount" name="amount" placeholder="0" value="{{old('amount')}}">
             @error('amount')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
         </div>
         <div class="form-group">
             <label for="message">Комментарий</label>
-            <textarea class="@error('message') is-invalid @enderror form-control" id="message" placeholder="Расскажи за что" name="message" rows="3">{{old('message')}}</textarea>
+            <textarea class="@error('message') is-invalid @enderror form-control" id="message" placeholder="Сообщение получателю" name="message" rows="3">{{old('message')}}</textarea>
             @error('message')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
@@ -65,15 +66,39 @@
         <button type="submit" class="btn btn-primary">Перевести</button>
     </form>
 @endsection()
-<script>
-    function getUserInfo(uid,prefix){
-        jQuery.ajax({
-            type:'GET',
-            url:'/user-info/'+uid,
-            success:function(data){
-                console.log("#"+prefix+"_id_suggestion");
-                jQuery("#"+prefix+"_id_suggestion").html(data.msg).show();
-            }
-        });
-    }
-</script>
+@section('afterLoadPage')
+    <script>
+        function getAccountInfo(uid,prefix){
+            jQuery.ajax({
+                type:'GET',
+                url:'/account-info/'+uid,
+                success:function(data){
+                    jQuery("#"+prefix+"_id_suggestion").html(data.msg).show();
+                }
+            });
+        }
+        function getTransactionTypeInfo(transactionTypeID){
+            jQuery.ajax({
+                type:'GET',
+                url:'/transaction-type-info/'+transactionTypeID,
+                success:function(data){
+                    if (data!=null){
+                        jQuery("#target_id").val(data.account_id).trigger('onchange');
+                        jQuery("#message").html(data.message);
+                    }
+                }
+            });
+        }
+        function getBalance(accountID){
+            jQuery.ajax({
+                type:'GET',
+                url:'/account-balance/'+accountID,
+                success:function(data){
+                    jQuery("#init_id_suggestion").html(data.msg).show();
+                }
+            });
+        }
+        getTransactionTypeInfo($("#transaction_type_id").val());
+        getBalance($("#init_id").val());
+    </script>
+@endsection

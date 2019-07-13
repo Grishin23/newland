@@ -3,7 +3,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item" aria-current="page"><a href="/"> Мой профиль</a></li>
-            <li class="breadcrumb-item" aria-current="page"><a href="{{route('availableAccounts')}}">Доступные счета</a></li>
+            <li class="breadcrumb-item" aria-current="page"><a href="{{route('availableAccounts')}}">Счета</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{$account->name??$account->user->name}}</li>
         </ol>
     </nav>
@@ -34,7 +34,7 @@
                 @if($transaction->account_init_id == $account->id)
                     Кому: <span class="small">{{$transaction->account_target->name??$transaction->account_target->user->name}}</span>
                 @else()
-                    От кого: <span class="small">{{$transaction->account_init->name??$transaction->account_init->user->name}}</span>
+                    Отправитель: <span class="small">{{$transaction->account_init->name??$transaction->account_init->user->name}}</span>
                 @endif
                     <br>
                     Номер транзакции: <span class="small">{{$transaction->id??'-'}}</span>

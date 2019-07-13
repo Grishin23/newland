@@ -36,6 +36,8 @@ Route::post('/user-profile/settings', 'UserProfile@update')->name('profileUpdate
 Route::get('/user-profile/password', 'UserProfile@updatePasswordForm')->name('passwordEditForm');
 Route::post('/user-profile/password', 'UserProfile@updatePassword')->name('passwordEdit');
 
-Route::get('/user-info/{id}', 'UserProfile@userInfo')->name('userInfo');
+Route::get('/account-info/{id}', 'UserProfile@userInfo')->name('userInfo');
+Route::get('/account-balance/{id}', 'UserProfile@balance')->name('balance');
+Route::get('/transaction-type-info/{id}', 'UserProfile@transactionTypeInfo')->name('transactionTypeInfo');
 
 

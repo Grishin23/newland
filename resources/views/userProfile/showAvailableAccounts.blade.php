@@ -3,10 +3,10 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item" aria-current="page"><a href="/"> Мой профиль</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Доступные счета</li>
+            <li class="breadcrumb-item active" aria-current="page">Счета</li>
         </ol>
     </nav>
-    <h1>Доступные счета</h1>
+    <h1>Счета</h1>
     @foreach($availableAccounts as $account)
         <div class="card mb-2">
             <div class="card-header">

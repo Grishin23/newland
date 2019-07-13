@@ -36,7 +36,7 @@ class UserProfile extends Controller
         if (!$account){
             abort(404);
         }
-        if (!request()->user()->checkAvailableEdit($id)){
+        if (!request()->user()->checkAvailable($id)){
             abort(403);
         }
         $accountTransactions = Transaction::where('account_init_id',$account->id)
@@ -61,6 +61,15 @@ class UserProfile extends Controller
         $message = $Account->name??$Account->user->name??'Неизвестный ИНН';
         return response()->json(['msg'=>$message]);
     }
+    public function balance($id){
+        $Account = Account::find($id);
+        $message = $Account->balance??'Неизвестный ИНН';
+        return response()->json(['msg'=>$message]);
+    }
+    public function transactionTypeInfo($id){
+        $TransactionType = TransactionType::find($id);
+        return response()->json($TransactionType??null);
+    }
     public function moneyTransfer(Request $request){
         $params = $request->all();
         $params['init_id'] = $accountInitID = $request->init_id??$request->user()->main_account->id;
@@ -81,7 +90,7 @@ class UserProfile extends Controller
             'amount.required'=>'Укажи сумму',
             'amount.regex'=>'Не балуй. Введи корректно',
             'amount.min'=>'Не балуй. Введи корректно',
-            'amount.max'=>'Надо подкопить',
+            'amount.max'=>'Недостаточно средств',
             'message.max'=>'Короче моржно?',
             'message.required'=>'Напиши комментарий',
             'message.min'=>'Напиши побольше, а то потом не вспомнишь куда деньги дел',

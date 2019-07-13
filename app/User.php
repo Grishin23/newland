@@ -101,4 +101,14 @@ class User extends Authenticatable
         }
         return false;
     }
+    public function checkAvailable($accountID){
+        if ($this->main_account->id == $accountID){
+            return true;
+        }
+        $accounts = $this->available_accounts->toArray();
+        if ($accounts && in_array($accountID,array_column($accounts,'id'))){
+            return true;
+        }
+        return false;
+    }
 }

@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    ЦЮ-Онлайн
+                    Банк Ньюландии
                 </div>
             </div>
         </div>

@@ -9,7 +9,7 @@
     @if (session('transaction'))
         <div class="card mb-2">
             <div class="card-header">
-                <span class="float-left text-success"> Опрерация проведена успешно!</span>
+                <span class="float-left text-success"> Операция проведена успешно!</span>
             </div>
             <div class="card-body">
                     Номер транзакции: <span class="small">{{session('transaction')['id']}}</span>
@@ -22,7 +22,7 @@
     @if($mainAccount)
         <div class="row">
             <div class="col-6">
-                <dt>Твой ИНН</dt>
+                <dt>ИНН</dt>
                 <dd>{{$mainAccount->id}}</dd>
             </div>
             <div class="col-6">
@@ -43,7 +43,7 @@
                         Кому: <span class="small">{{$transaction->account_target->name??$transaction->account_target->user->name}}</span>
                         <span class="small">{{$transaction->account_target->user?'('.$transaction->account_target->user->crew.' экипаж)':''}}</span>
                     @else()
-                        От кого: <span class="small">{{$transaction->account_init->name??$transaction->account_init->user->name}}</span>
+                        Отправитель: <span class="small">{{$transaction->account_init->name??$transaction->account_init->user->name}}</span>
                         <span class="small">{{$transaction->account_init->user?'('.$transaction->account_init->user->crew.' экипаж)':''}}</span>
                     @endif
                     <br>
