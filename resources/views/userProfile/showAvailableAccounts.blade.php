@@ -21,8 +21,8 @@
     @foreach($availableAccounts as $account)
         <div class="card mb-2">
             <div class="card-header">
-                <span class="float-left"> # {{$account->id}} </span>
-                <span class="float-right"> {{$account->name??$account->user->name}} </span>
+                <span class="float-left"> # {{$account->id}} </span>:
+                <span class=""> {{$account->name??$account->user->name}} </span>
             </div>
             <div class="card-body">
                 <span class="float-left">Баланс: {{$account->balance}}</span>
