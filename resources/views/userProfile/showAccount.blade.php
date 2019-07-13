@@ -30,17 +30,22 @@
                 <span class="float-right {{$transaction->account_init_id == $account->id?'text-danger':'text-success'}}">{{$transaction->amount}}</span>
             </div>
             <div class="card-body">
-
-                @if($transaction->account_init_id == $account->id)
-                    Кому: <span class="small">{{$transaction->account_target->name??$transaction->account_target->user->name}}</span>
-                @else()
-                    Отправитель: <span class="small">{{$transaction->account_init->name??$transaction->account_init->user->name}}</span>
-                @endif
-                    <br>
-                    Номер транзакции: <span class="small">{{$transaction->id??'-'}}</span>
-                    <br>
-                    Тип операции: <span class="small">{{$transaction->transaction_type->name??'-'}}</span>
-                    <blockquote class="blockquote mb-0">
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        @if($transaction->account_init_id == $account->id)
+                            Кому: <span class="small">{{$transaction->account_target->name??$transaction->account_target->user->name}}</span>
+                        @else()
+                            Отправитель: <span class="small">{{$transaction->account_init->name??$transaction->account_init->user->name}}</span>
+                        @endif
+                    </div>
+                    <div class="col-12 col-md-3">
+                        Номер транзакции: <span class="small">{{$transaction->id??'-'}}</span>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        Тип операции: <span class="small">{{$transaction->transaction_type->name??'-'}}</span>
+                    </div>
+                </div>
+                <blockquote class="blockquote mb-0">
                     <footer class="blockquote-footer">{{$transaction->message}}</footer>
                 </blockquote>
             </div>
