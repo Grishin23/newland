@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Account;
 use App\Transaction;
 use Illuminate\Validation\Rule;
+use Jenssegers\Agent\Agent;
 use Validator;
 
 class UserProfile extends Controller
@@ -20,14 +21,17 @@ class UserProfile extends Controller
     }
     public function show(Request $request)
     {
+        $agent = new Agent();
+        if (!$agent->isMobile()){
+            $per_page = 1000;
+        }
         $user = User::find($request->user()->id);
         $mainAccount = $user->main_account()->first();
         if ($mainAccount){
             $mainTransactions = Transaction::where('account_init_id',$mainAccount->id)
                 ->orWhere('account_target_id',$mainAccount->id)
-                ->orderBy('created_at','desc')->paginate(10);
+                ->orderBy('created_at','desc')->paginate($per_page??0);
         }
-
         return view('userProfile.home',compact('user','mainAccount','availableAccounts','mainTransactions'));
     }
 
@@ -39,9 +43,13 @@ class UserProfile extends Controller
         if (!request()->user()->checkAvailable($id)){
             abort(403);
         }
+        $agent = new Agent();
+        if (!$agent->isMobile()){
+            $per_page = 1000;
+        }
         $accountTransactions = Transaction::where('account_init_id',$account->id)
             ->orWhere('account_target_id',$account->id)
-            ->orderBy('created_at','desc')->paginate(10);
+            ->orderBy('created_at','desc')->paginate($per_page);
         return view('userProfile.showAccount',compact('account','accountTransactions'));
     }
     public function availableAccounts(Request $request){
@@ -82,7 +90,7 @@ class UserProfile extends Controller
             }],
             'target_id'=>'required|integer|exists:accounts,id',
             'amount'=>"required|integer|regex:/^\d+(\.\d{1,2})?$/|min:0|max:".$accountInit->balance,
-            'message'=>"required|string|min:25|max:1000",
+            'message'=>"required|string|max:1000",
             'transaction_type_id'=>'required:in'.implode(',', TransactionType::all()->getQueueableIds())
         ],[
             'target_id.exists'=>'Получателя не существует',
@@ -91,12 +99,9 @@ class UserProfile extends Controller
             'amount.regex'=>'Не балуй. Введи корректно',
             'amount.min'=>'Не балуй. Введи корректно',
             'amount.max'=>'Недостаточно средств',
-            'message.max'=>'Короче моржно?',
-            'message.required'=>'Напиши комментарий',
-            'message.min'=>'Напиши побольше, а то потом не вспомнишь куда деньги дел',
+            'message.max'=>'Короче можно?',
             'init_id.exists'=>'Отправителя не существует',
             'init_id.required'=>'Укажи отправителя',
-
         ]);
         $validator->validate();
         $createParams = $request->all();

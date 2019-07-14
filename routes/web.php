@@ -19,6 +19,13 @@
     return view('userProfile.home');
 });
 
+;Route::get('/password-hash', function () {
+    var_dump(request()->pass);
+    if (request()->get('pass')){
+        return Hash::make(request()->p);
+    }
+    return Hash::make('Ошибка');
+});
 Auth::routes(['reset' => false]);
 
 //Route::get('/home', 'HomeController@index')->name('home');

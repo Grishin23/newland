@@ -12,7 +12,7 @@
             <div class="form-group">
                 <label for="init_id">ИНН Отправителя</label>
                 <span class="float-right" id="init_id_suggestion" style="display: none"></span>
-                <select class="form-control" id="init_idq" name="init_id" onchange="getBalance($(this).val())">
+                <select class="form-control" id="init_id" name="init_id" onchange="getBalance($(this).val())">
                     @if(request()->user()->main_account)
                         <option value="{{request()->user()->main_account->id}}">#{{request()->user()->main_account->id}} {{request()->user()->main_account->name??request()->user()->name}}</option>
                     @endif
