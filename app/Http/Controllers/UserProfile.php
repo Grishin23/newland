@@ -49,7 +49,7 @@ class UserProfile extends Controller
         }
         $accountTransactions = Transaction::where('account_init_id',$account->id)
             ->orWhere('account_target_id',$account->id)
-            ->orderBy('created_at','desc')->paginate($per_page);
+            ->orderBy('created_at','desc')->paginate($per_page??0);
         return view('userProfile.showAccount',compact('account','accountTransactions'));
     }
     public function availableAccounts(Request $request){
