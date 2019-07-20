@@ -100,6 +100,7 @@ class UserProfile extends Controller
             'amount.min'=>'Не балуй. Введи корректно',
             'amount.max'=>'Недостаточно средств',
             'message.max'=>'Короче можно?',
+            'message.required'=>'Обязательное поле',
             'init_id.exists'=>'Отправителя не существует',
             'init_id.required'=>'Укажи отправителя',
         ]);

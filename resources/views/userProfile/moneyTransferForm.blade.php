@@ -1,4 +1,7 @@
 @extends('layouts.default')
+@section('title')
+    Перевод онлайн
+@endsection
 @section('content')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -6,7 +9,7 @@
             <li class="breadcrumb-item active" aria-current="page">Перевод онлайн</li>
         </ol>
     </nav>
-    <form method="post" action="{{route('moneyTransfer')}}">
+    <form method="post" action="{{route('moneyTransfer')}}" class="js-money-transfer-form">
         @csrf
         @if($available_accounts_edit->count())
             <div class="form-group">
@@ -17,7 +20,7 @@
                         <option value="{{request()->user()->main_account->id}}">#{{request()->user()->main_account->id}} {{request()->user()->main_account->name??request()->user()->name}}</option>
                     @endif
                     @foreach($available_accounts_edit as $account)
-                        <option value="{{$account->id}}">#{{$account->id}} {{$account->name??$account->user->name}}</option>
+                        <option value="{{$account->id}}">#{{$account->id}} {{$account->name??$account->user->name??''}}</option>
                     @endforeach
                 </select>
             </div>
@@ -63,7 +66,7 @@
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
         </div>
-        <button type="submit" class="btn btn-primary">Перевести</button>
+        <button type="submit" class="btn btn-primary" onclick="$(this).attr('disabled',true); $('.js-money-transfer-form').submit();">Перевести</button>
     </form>
 @endsection()
 @section('afterLoadPage')
