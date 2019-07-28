@@ -39,13 +39,12 @@
                         @endif
                     @endforeach
                 </select>
-            </div>
             <div class="form-group">
                 <label for="target_id">ИНН Получателя</label>
                 <span class="float-right" id="target_id_suggestion" style="display: none"></span>
                 <input type="number" class="@error('target_id') is-invalid @enderror form-control" id="target_id"
                        onchange="getAccountInfo(jQuery(this).val(),'target')"
-                       name="target_id" placeholder="ИНН" value="{{old('target_id')}}">
+                       name="target_id" placeholder="ИНН" value="{{request()->user()->role_id!=2?10:old('target_id')}}" {{request()->user()->role_id!=2?'disabled':''}}>
                 @error('target_id')
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
