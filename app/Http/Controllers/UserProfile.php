@@ -76,14 +76,14 @@ class UserProfile extends Controller
     }
     public function transactionTypeInfo($id){
         $TransactionType = TransactionType::find($id);
-        if (request()->user()->role_id!=2){
+        if (request()->user()->user_role_id!=2){
             $TransactionType->account_id =  10;
         }
         return response()->json($TransactionType??null);
     }
     public function moneyTransfer(Request $request){
         $params = $request->all();
-        if (request()->user()->role_id!=2){
+        if (request()->user()->user_role_id!=2){
             $params['target_id'] = 10;
         }
         $params['init_id'] = $accountInitID = $request->init_id??$request->user()->main_account->id;
