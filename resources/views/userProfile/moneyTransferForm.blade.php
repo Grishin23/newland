@@ -1,7 +1,4 @@
 @extends('layouts.default')
-@section('title')
-    Перевод онлайн
-@endsection
 @section('content')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
