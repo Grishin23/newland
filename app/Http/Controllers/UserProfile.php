@@ -32,7 +32,7 @@ class UserProfile extends Controller
                 ->orWhere('account_target_id',$mainAccount->id)
                 ->orderBy('created_at','desc')->paginate($per_page??0);
         }
-        return view('userProfile.home',compact('user','mainAccount','availableAccounts','mainTransactions'));
+        return view('userProfile.home',compact('user','mainAccount','mainTransactions'));
     }
 
     public function showAccount($id){
