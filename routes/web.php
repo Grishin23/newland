@@ -22,7 +22,7 @@
 ;Route::get('/password-hash', function () {
     var_dump(request()->pass);
     if (request()->get('pass')){
-        return Hash::make(request()->p);
+        return Hash::make(request()->pass);
     }
     return Hash::make('Ошибка');
 });
