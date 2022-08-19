@@ -95,7 +95,7 @@ class UserProfile extends Controller
                 }
             }],
             'target_id'=>'required|integer|exists:accounts,id',
-            'amount'=>"required|integer|regex:/^\d+(\.\d{1,2})?$/|min:0|max:".$accountInit->balance,
+            'amount'=>"required|integer|regex:/^\d+(\.\d{1,2})?$/|min:1|max:".$accountInit->balance,
             'message'=>"required|string|max:1000",
             'transaction_type_id'=>'required:in'.implode(',', TransactionType::all()->getQueueableIds())
         ],[
