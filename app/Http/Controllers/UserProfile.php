@@ -76,16 +76,16 @@ class UserProfile extends Controller
     }
     public function transactionTypeInfo($id){
         $TransactionType = TransactionType::find($id);
-        if (request()->user()->user_role_id!=1){
-            $TransactionType->account_id = 1;
-        }
+//        if (request()->user()->user_role_id!=1){
+//            $TransactionType->account_id = 1;
+//        }
         return response()->json($TransactionType??null);
     }
     public function moneyTransfer(Request $request){
         $params = $request->all();
-        if (request()->user()->user_role_id!=1){
-            $params['target_id'] = 1;
-        }
+//        if (request()->user()->user_role_id!=1){
+//            $params['target_id'] = 1;
+//        }
         $params['init_id'] = $accountInitID = $request->init_id??$request->user()->main_account->id;
         $accountInit = Account::find($params['init_id']);
         $validator = Validator::make($params,[
@@ -142,7 +142,7 @@ class UserProfile extends Controller
     {
         Validator::make($request->all(),[
             'name'=>'required|string|max:255',
-            'crew'=>'required|integer|max:7',
+            'crew'=>'required|integer|max:9',
         ],[
             'crew.required'=>'Введи номер экипажа'
         ])->validate();
